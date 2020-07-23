@@ -1,28 +1,10 @@
+OBJCOPY=./toolchain/bin/llvm-objcopy
+CC=./toolchain/bin/clang
+
 # You can override the CFLAGS and C compiler externally,
 # e.g. make PLATFORM=cortex-m3
 CFLAGS += -g -Wall -Werror -I include
-
-ifeq ($(PLATFORM),cortex-m3)
-  CC      = arm-none-eabi-gcc
-  AR      = arm-none-eabi-ar
-  CFLAGS += -mcpu=cortex-m3 -mthumb
-  CFLAGS += -fno-common -Os
-  CFLAGS += -ffunction-sections -fdata-sections
-else ifeq ($(PLATFORM),cortex-m0)
-  CC      = arm-none-eabi-gcc
-  AR      = arm-none-eabi-ar
-  CFLAGS += -mcpu=cortex-m0 -mthumb
-  CFLAGS += -fno-common -Os
-  CFLAGS += -ffunction-sections -fdata-sections
-else ifeq ($(PLATFORM),m68k-elf)
-  CC      = m68k-elf-gcc
-  AR      = m68k-elf-ar
-  CFLAGS += -mcpu=68000
-  CFLAGS += -fno-common -Os
-  CFLAGS += -ffunction-sections -fdata-sections
-  CFLAGS += -ffreestanding
-  CFLAGS += -DNO_UNISTD_H
-endif
+CFLAGS += -O3 --target=tl45-unknown-none -fintegrated-as
 
 # With this, the makefile should work on Windows also.
 ifdef windir
@@ -39,7 +21,7 @@ TESTS_OBJS = $(TESTS_CSRC:.c=)
 
 # Some of the files uses "templates", i.e. common pieces
 # of code included from multiple files.
-CFLAGS += -Isrc/templates
+CFLAGS += -O3 -Isrc/templates
 
 all: libc.a
 
